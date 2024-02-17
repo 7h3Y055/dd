@@ -3,23 +3,23 @@
 int     philo(t_arg *ptr)
 {
     int i;
-    int n;
+    // int n;
 
     i = -1;
-    n = ptr->philos_number;
+    // n = ptr->philos_number;
     while (++i < ptr->philos_number)
     {
         if (pthread_create(&ptr->philo[i].th, NULL, routine, &ptr->philo[i]) != 0)
             return (-1);
         usleep(50);
-        // if (pthread_detach(ptr->philo[i].th) != 0)
-        //     return (-1);
+        if (pthread_detach(ptr->philo[i].th) != 0)
+            return (-1);
     }
     monitor(ptr);
-    i = -1;
-    while (++i < n)
-        if (pthread_join(ptr->philo[i].th, NULL) != 0)
-            return (-1);
+    // i = -1;
+    // while (++i < n)
+    //     if (pthread_join(ptr->philo[i].th, NULL) != 0)
+    //         return (-1);
     return (0);
 }
 
@@ -91,11 +91,11 @@ void monitor(t_arg *ptr)
                 pthread_mutex_unlock(&ptr->mtx);
                 // pthread_mutex_unlock(&ptr->philo[i].le_th);
 
+                // pthread_mutex_lock(&ptr->mtx);
                 print_status(&ptr->philo[i], 'd');
-
-                pthread_mutex_lock(&ptr->mtx);
                 is_some_philo_die(ptr, 1);
-                printf("22222222222222222222\n");
+
+                // printf("22222222222222222222\n");
                 return ;
             }
             pthread_mutex_unlock(&ptr->mtx);
@@ -104,4 +104,40 @@ void monitor(t_arg *ptr)
     }
 }
 
+
+// void monitor(t_arg *ptr)
+// {
+//     int i;
+
+//     while (ptr->status != 'd')
+//     {
+//         i = 0;
+//         pthread_mutex_lock(&ptr->mtx);
+//         if (ptr->finished_philos == ptr->philos_number)
+//         {
+//             ptr->status = 'd';
+//             pthread_mutex_unlock(&ptr->mtx);
+//             break ;
+//         }
+//         pthread_mutex_unlock(&ptr->mtx);
+//         while (i < ptr->philos_number)
+//         {
+//             pthread_mutex_lock(&ptr->mtx);
+//             if (ptr->philo[i].status != 'f' && is_die(&ptr->philo[i]))
+//             {
+//                 pthread_mutex_unlock(&ptr->mtx);
+//                 // pthread_mutex_unlock(&ptr->philo[i].le_th);
+
+//                 // pthread_mutex_lock(&ptr->mtx);
+//                 print_status(&ptr->philo[i], 'd');
+//                 is_some_philo_die(ptr, 1);
+
+//                 // printf("22222222222222222222\n");
+//                 return ;
+//             }
+//             pthread_mutex_unlock(&ptr->mtx);
+//             i++;
+//         }
+//     }
+// }
 
